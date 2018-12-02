@@ -59,29 +59,30 @@
               <div class="menu-manual-item">
                 <button class="menu-button">Оформити скаргу</button>
               </div>
-              
-              <v-form>
-                <v-text-field label="ПЫБ" v-model="claim.fio" prepend-icon="account_box" :rules="rules" required color="light-blue lighten-1">
-                </v-text-field>
 
-                <v-text-field label="Прописка" v-model="claim.place" prepend-icon="account_box" :rules="rules" required
+              <v-form id="uploadForm">
+                <v-text-field label="ПЫБ" v-model="claim.fio" prepend-icon="account_box" :rules="rules.fio" required
                   color="light-blue lighten-1">
                 </v-text-field>
 
-                <v-text-field label="Номер телефону" v-model="claim.phone" prepend-icon="account_box" :rules="rules"
+                <v-text-field label="Прописка" v-model="claim.place" prepend-icon="account_box" :rules="rules.general"
                   required color="light-blue lighten-1">
                 </v-text-field>
 
-                <v-text-field label="E-mail" v-model="claim.email" prepend-icon="account_box" :rules="rules" required
-                  color="light-blue lighten-1">
+                <v-text-field label="Номер телефону" v-model="claim.phone" prepend-icon="account_box" :rules="rules.phone"
+                  required color="light-blue lighten-1" mask="(###) ### ## ##">
                 </v-text-field>
 
-                <v-text-field label="Номер авто" v-model="claim.numbers" prepend-icon="account_box" :rules="rules"
+                <v-text-field label="E-mail" v-model="claim.email" prepend-icon="account_box" :rules="rules.email"
                   required color="light-blue lighten-1">
                 </v-text-field>
 
-                <input type="file" :change="addFile" multiple accept="image/*,image/jpeg">
-                <div class="files" v-for="item in claim.files">{{item}}</div>
+                <v-text-field label="Номер авто" v-model="claim.numbers" prepend-icon="account_box" :rules="rules.general"
+                  required color="light-blue lighten-1">
+                </v-text-field>
+
+                <input type="file" id="files" name="files" :change='addFile()' multiple accept="image/*,image/jpeg">
+                <div class="files" v-for="item in claim.upFiles">{{item}}</div>
 
                 <v-btn block color="light-blue lighten-1" @click.native="send()">Выдправити</v-btn>
               </v-form>
@@ -132,7 +133,31 @@
     data() {
       return {
         snackbar: false,
-        rules: [(value) => !!value || 'Це поле обовязкове'],
+        rules: {
+          general: [(value) => !!value || 'Це поле обовязкове'],
+          email: [value => {
+            if (!!value) {
+              return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) || 'Введите верный email'
+            } else {
+              return 'Це поле обовязкове'
+            }
+          }],
+          phone: [value => {
+            if (!!value) {
+              return value.length > 9 || 'Введите верный номер телефона'
+            } else {
+              return 'Це поле обовязкове'
+            }
+          }],
+          fio: [value => {
+            if (!!value) {
+              return /[А-Яа-яЁёІіЇїЄє]+$/.test(value) || 'Введите верный fio'
+            } else {
+              return 'Це поле обовязкове'
+            }
+          }],
+        },
+
         claim: {
           fio: '',
           place: '',
@@ -140,17 +165,18 @@
           email: '',
           numbers: '',
           cords: '',
-          files: []
+          upFiles: []
         },
         message: ''
       }
     },
     methods: {
       send() {
-        Authentication.authenticate(this, this.credentials, '/')
+        // Authentication.authenticate(this, this.credentials, '/')
       },
-      addFile() {     
-        this.files.pop(1);
+      addFile() {
+        console.log(document.querySelector('#file'))
+
         // if (this.$refs.pictureInput.file) {
         //   this.files.pop(this.$refs.pictureInput.file);
         // } else {
