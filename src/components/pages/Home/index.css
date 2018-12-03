@@ -350,8 +350,21 @@ color: #2F3B4C
   background-color: green;
 }
 
+.form-wrapper{
+  /* box-shadow: 0 1px 5px inset rgb(0, 0, 0, 0.5); */
+}
 .form {
   max-width: 730px;
+  width: 70%;
   margin: 0 auto;
   padding: 10px;
+
+} 
+
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }

@@ -1,6 +1,6 @@
 <style>
-    @import url("./index.css");
-  </style>
+  @import url("./index.css");
+      </style>
 <template>
   <div class="home">
     <div class="menu-container">
@@ -59,32 +59,38 @@
               <div class="menu-manual-item">
                 <button class="menu-button" id="formshow" v-on:click="form = !form">Оформити скаргу</button>
               </div>
-              <v-form v-if="form === true" id="uploadForm" class="form">
-                <v-text-field label="ПЫБ" v-model="claim.fio" prepend-icon="account_box" :rules="rules.fio" required
-                  color="light-blue lighten-1">
-                </v-text-field>
+              <transition name="fade">
+                <div class="form-wrapper" v-if="form === true">
+                  <hr>
+                  <v-form id="uploadForm" class="form">
+                    <v-text-field label="ПЫБ" v-model="claim.fio" prepend-icon="account_box" :rules="rules.fio"
+                      required color="light-blue lighten-1">
+                    </v-text-field>
 
-                <v-text-field label="Прописка" v-model="claim.place" prepend-icon="account_box" :rules="rules.general"
-                  required color="light-blue lighten-1">
-                </v-text-field>
+                    <v-text-field label="Прописка" v-model="claim.place" prepend-icon="account_box" :rules="rules.general"
+                      required color="light-blue lighten-1">
+                    </v-text-field>
 
-                <v-text-field label="Номер телефону" v-model="claim.phone" prepend-icon="account_box" :rules="rules.phone"
-                  required color="light-blue lighten-1" mask="(###) ### ## ##">
-                </v-text-field>
+                    <v-text-field label="Номер телефону" v-model="claim.phone" prepend-icon="account_box" :rules="rules.phone"
+                      required color="light-blue lighten-1" mask="(###) ### ## ##">
+                    </v-text-field>
 
-                <v-text-field label="E-mail" v-model="claim.email" prepend-icon="account_box" :rules="rules.email"
-                  required color="light-blue lighten-1">
-                </v-text-field>
+                    <v-text-field label="E-mail" v-model="claim.email" prepend-icon="account_box" :rules="rules.email"
+                      required color="light-blue lighten-1">
+                    </v-text-field>
 
-                <v-text-field label="Номер авто" v-model="claim.numbers" prepend-icon="account_box" :rules="rules.general"
-                  required color="light-blue lighten-1">
-                </v-text-field>
+                    <v-text-field label="Номер авто" v-model="claim.numbers" prepend-icon="account_box" :rules="rules.general"
+                      required color="light-blue lighten-1">
+                    </v-text-field>
 
-                <input type="file" id="file" ref="file" v-on:change="addFile()" />
+                    <input type="file" id="file" ref="file" v-on:change="addFile()" />
 
-                <v-btn block color="light-blue lighten-1" @click.native="send()">Выдправити</v-btn>
+                    <v-btn block color="light-blue lighten-1" @click.native="send()">Выдправити</v-btn>
 
-              </v-form>
+                  </v-form>
+
+                </div>
+              </transition>
             </div>
 
             <v-snackbar timeout="6000" bottom="bottom" color="red lighten-1" v-model="snackbar">
@@ -189,7 +195,7 @@
       },
       addFile() {
         this.file = this.$refs.file.files[0];
-        
+
         console.log('>>>> 1st element in files array >>>> ', this.file);
 
         // if (this.$refs.pictureInput.file) {
