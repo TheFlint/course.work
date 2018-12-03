@@ -1,5 +1,5 @@
 <style>
-    @import url("./index.css");
+  @import url("./index.css");
   </style>
 <template>
   <div class="home">
@@ -57,42 +57,44 @@
                 </div>
               </div>
               <transition name="fade">
-              <div class="menu-manual-item" v-if="form === false">
-                <button class="menu-button" id="formshow" v-on:click="form = !form">Оформити скаргу</button>
-              </div>     
-            </transition>        
-            </div>
-            <transition name="fade">
-                <div class="form-wrapper" v-if="form === true">
-                  <v-form id="uploadForm" class="form">
-                    <v-text-field label="ПЫБ" v-model="claim.fio" prepend-icon="account_box" :rules="rules.fio"
-                      required color="light-blue lighten-1">
-                    </v-text-field>
-
-                    <v-text-field label="Прописка" v-model="claim.place" prepend-icon="account_box" :rules="rules.general"
-                      required color="light-blue lighten-1">
-                    </v-text-field>
-
-                    <v-text-field label="Номер телефону" v-model="claim.phone" prepend-icon="account_box" :rules="rules.phone"
-                      required color="light-blue lighten-1" mask="(###) ### ## ##">
-                    </v-text-field>
-
-                    <v-text-field label="E-mail" v-model="claim.email" prepend-icon="account_box" :rules="rules.email"
-                      required color="light-blue lighten-1">
-                    </v-text-field>
-
-                    <v-text-field label="Номер авто" v-model="claim.numbers" prepend-icon="account_box" :rules="rules.general"
-                      required color="light-blue lighten-1">
-                    </v-text-field>
-
-                    <input type="file" id="file" ref="file" v-on:change="addFile()" />
-
-                    <v-btn block color="light-blue lighten-1" @click.native="send()">Выдправити</v-btn>
-
-                  </v-form>
-
+                <div class="menu-manual-item" v-if="form === false">
+                  <button class="menu-button" id="formshow" v-on:click="form = !form">Оформити скаргу</button>
                 </div>
               </transition>
+            </div>
+            <transition name="fade">
+
+              <div class="form-wrapper" v-if="form === true">
+                <v-form id="uploadForm" class="form">
+                  <h2 style="padding: 5px">Заголовок которого не хватает</h2>
+                  <v-text-field label="ПЫБ" v-model="claim.fio" prepend-icon="account_box" :rules="rules.fio" required
+                    color="light-blue lighten-1">
+                  </v-text-field>
+
+                  <v-text-field label="Прописка" v-model="claim.place" prepend-icon="account_box" :rules="rules.general"
+                    required color="light-blue lighten-1">
+                  </v-text-field>
+
+                  <v-text-field label="Номер телефону" v-model="claim.phone" prepend-icon="account_box" :rules="rules.phone"
+                    required color="light-blue lighten-1" mask="(###) ### ## ##">
+                  </v-text-field>
+
+                  <v-text-field label="E-mail" v-model="claim.email" prepend-icon="account_box" :rules="rules.email"
+                    required color="light-blue lighten-1">
+                  </v-text-field>
+
+                  <v-text-field label="Номер авто" v-model="claim.numbers" prepend-icon="account_box" :rules="rules.general"
+                    required color="light-blue lighten-1">
+                  </v-text-field>
+
+                  <input type="file" id="file" ref="file" v-on:change="addFile()" />
+
+                  <v-btn block color="light-blue lighten-1" @click.native="send()">Выдправити</v-btn>
+
+                </v-form>
+
+              </div>
+            </transition>
             <v-snackbar timeout="6000" bottom="bottom" color="red lighten-1" v-model="snackbar">
               {{ message }}
             </v-snackbar>
