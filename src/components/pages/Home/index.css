@@ -22,13 +22,12 @@
 
 .menu-wrap {
   width: 80rem;
-  margin: 10%;
+  margin: 50px;
 }
 
 .menu-content {
   background-color: #EEF1F4;
   height: inherit;
-  border-radius: 3px;
 }
 
 .menu-logineduser {

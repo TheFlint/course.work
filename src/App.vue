@@ -1,6 +1,6 @@
 <template>
   <v-app style="background: none">
-    <v-container>
+    <v-container style="padding: 0;">
       <router-view />
     </v-container>
   </v-app>
@@ -21,10 +21,11 @@
   @import "./assets/styles";
 
   body {
+    margin: 0;
+    padding: 0;
     background: url('./assets/images/background.png') no-repeat center center fixed;
     background-size: cover;
-
-    &:after {
+    /*&:after {
       content: '';
       position: fixed;
       width: 100%;
@@ -34,6 +35,6 @@
       background-color: $background-tint;
       opacity: .3;
       z-index: -1;
-    }
+    }*/
   }
 </style>

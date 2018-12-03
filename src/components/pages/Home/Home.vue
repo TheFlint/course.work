@@ -1,6 +1,6 @@
 <style>
   @import url("./index.css");
-      </style>
+</style>
 <template>
   <div class="home">
     <div class="menu-container">
