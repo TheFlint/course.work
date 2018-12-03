@@ -1,7 +1,7 @@
 <template>
   <v-app style="background: none">
     <v-container>
-      <router-view/>
+      <router-view />
     </v-container>
   </v-app>
 </template>
@@ -15,13 +15,15 @@
       titleTemplate: '%s | My Awesome Webapp'
     }
   }
-</script> 
+</script>
 
 <style lang="scss">
   @import "./assets/styles";
-   body {
-    background: url('./assets/images/background.png') no-repeat  center center fixed;
+
+  body {
+    background: url('./assets/images/background.png') no-repeat center center fixed;
     background-size: cover;
+
     &:after {
       content: '';
       position: fixed;

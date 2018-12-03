@@ -1,6 +1,6 @@
 <style>
-  @import url("./index.css");
-</style>
+    @import url("./index.css");
+  </style>
 <template>
   <div class="home">
     <div class="menu-container">
@@ -20,7 +20,7 @@
             </nav>
             </div> -->
           <div class="menu-form">
-            <h2>Як це працює?</h2>
+            <h2 class='header'>Як це працює?</h2>
             <div class="entry">
               <div class="entry-item">
                 <img src="../../../assets/images/book.png" alt="">
@@ -57,10 +57,9 @@
                 </div>
               </div>
               <div class="menu-manual-item">
-                <button class="menu-button">Оформити скаргу</button>
+                <button class="menu-button" id="formshow" v-on:click="form = !form">Оформити скаргу</button>
               </div>
-
-              <v-form id="uploadForm">
+              <v-form v-if="form === true" id="uploadForm" class="form">
                 <v-text-field label="ПЫБ" v-model="claim.fio" prepend-icon="account_box" :rules="rules.fio" required
                   color="light-blue lighten-1">
                 </v-text-field>
@@ -81,14 +80,14 @@
                   required color="light-blue lighten-1">
                 </v-text-field>
 
-                <input type="file" id="files" name="files" :change='addFile()' multiple accept="image/*,image/jpeg">
-                <div class="files" v-for="item in claim.upFiles">{{item}}</div>
+                <input type="file" id="file" ref="file" v-on:change="addFile()" />
 
                 <v-btn block color="light-blue lighten-1" @click.native="send()">Выдправити</v-btn>
+
               </v-form>
             </div>
 
-            <v-snackbar timeout=6000 bottom="bottom" color="red lighten-1" v-model="snackbar">
+            <v-snackbar timeout="6000" bottom="bottom" color="red lighten-1" v-model="snackbar">
               {{ message }}
             </v-snackbar>
           </div>
@@ -113,7 +112,7 @@
             <p>Ваші персональні дані будуть використовуватись лише для заповнення форми заявки та в жодному разі не
               будуть надані стороннім особам чи опубліковані на сайті.
             </p>
-            <p>Заявка може оброблятися до 30 календарних діб.</p>
+            <p>Заявка може оброблятися до 30 робочих діб.</p>
           </div>
         </div>
       </div>
@@ -132,6 +131,7 @@
     },
     data() {
       return {
+        form: false,
         snackbar: false,
         rules: {
           general: [(value) => !!value || 'Це поле обовязкове'],
@@ -156,6 +156,13 @@
               return 'Це поле обовязкове'
             }
           }],
+          numbers: [value => {
+            if (!!value) {
+              return /[А-Я]{2}[0-9]{4}[А-Я]{2}/.test(value) || 'Введите верно номер авто'
+            } else {
+              return 'Це поле обовязкове'
+            }
+          }],
         },
 
         claim: {
@@ -172,10 +179,18 @@
     },
     methods: {
       send() {
-        // Authentication.authenticate(this, this.credentials, '/')
+        if (!!this.claim.fio && !!this.claim.place && !!this.claim.phone && !!this.claim.email && !!this.claim.numbers &&
+          !!this.claim.cords) {
+
+        } else {
+          this.snackbar = true
+          this.message = 'Заполните все поля'
+        }
       },
       addFile() {
-        console.log(document.querySelector('#file'))
+        this.file = this.$refs.file.files[0];
+        
+        console.log('>>>> 1st element in files array >>>> ', this.file);
 
         // if (this.$refs.pictureInput.file) {
         //   this.files.pop(this.$refs.pictureInput.file);
@@ -183,6 +198,22 @@
         //   console.log("Old browser. No support for Filereader API");
         // }
       },
+      // krya() {
+      //   console.log('-----------------------')
+      //   var f = window.getElementById('uploadForm');
+      //   f.hide();
+
+      //   // $(document).ready(function () {
+      //   //   $("formshow").click(function () {
+      //   //     $("#uploadForm").toggle(500);
+      //   //   });
+      //   // });
+      //   // $(document).ready(function(){
+      //   //     $("#carsjq").click(function(){
+      //   //         $("#getauto").toggle(500);
+      //   //     });
+      //   // });
+      // },
       // onChanged() {
       //   console.log("New picture loaded");
       //   if (this.$refs.pictureInput.file) {
@@ -208,6 +239,8 @@
       //       });
       //   }
       // }
-    }
+    },
+
+
   }
 </script>

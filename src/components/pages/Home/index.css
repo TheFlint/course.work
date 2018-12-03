@@ -36,6 +36,12 @@
   margin: 1rem 0 1rem 0;
 }
 
+.header {
+  /* background-color: #4EC4AC;
+  padding: 5px;
+  box-shadow: 0 1px 5px rgb(0, 0, 0, 0.5); */
+}
+
 .menu-head {
   background: #4EC4AC;
   display: flex;
@@ -147,13 +153,13 @@ color: #2F3B4C
   transform: translateY(-5px)
 }
 
-@media all and (max-width: 80rem) {
+@media screen and (max-width: 80rem) {
   .menu-wrap {
     width: 50rem;
   }
 }
 
-@media all and (max-width: 50rem) {
+@media screen and (max-width: 50rem) {
   .menu-head-item {
     padding: 5px;
   }
@@ -277,7 +283,7 @@ color: #2F3B4C
   /*внутрення тень (тык на кнопку)*/
 }
 
-@media all and (max-width: 750px) {
+@media screen and (max-width: 750px) {
   .menu-manual-items {
     flex-flow: column wrap;
   }
@@ -342,4 +348,10 @@ color: #2F3B4C
   border: rgb(0, 0, 0);
   border-radius: 50%;
   background-color: green;
+}
+
+.form {
+  max-width: 730px;
+  margin: 0 auto;
+  padding: 10px;
 }
