@@ -1,6 +1,6 @@
 <style>
-  @import url("./index.css");
-</style>
+    @import url("./index.css");
+  </style>
 <template>
   <div class="home">
     <div class="menu-container">
@@ -56,12 +56,14 @@
                   Натисніть кнопку "Надіслати", для того щоб ваша скарга потрапила до управління ДАІ.
                 </div>
               </div>
-              <div class="menu-manual-item">
-                <button class="menu-button" id="formshow" v-on:click="form = !form">Оформити скаргу</button>
-              </div>
               <transition name="fade">
+              <div class="menu-manual-item" v-if="form === false">
+                <button class="menu-button" id="formshow" v-on:click="form = !form">Оформити скаргу</button>
+              </div>     
+            </transition>        
+            </div>
+            <transition name="fade">
                 <div class="form-wrapper" v-if="form === true">
-                  <hr>
                   <v-form id="uploadForm" class="form">
                     <v-text-field label="ПЫБ" v-model="claim.fio" prepend-icon="account_box" :rules="rules.fio"
                       required color="light-blue lighten-1">
@@ -91,8 +93,6 @@
 
                 </div>
               </transition>
-            </div>
-
             <v-snackbar timeout="6000" bottom="bottom" color="red lighten-1" v-model="snackbar">
               {{ message }}
             </v-snackbar>
