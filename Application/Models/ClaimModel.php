@@ -11,29 +11,31 @@ namespace Flint\Application\Models;
 
 class ClaimModel
 {
-    // database connection and table name
-    private $conn;
-    private $table_name = "claim";
-
-    public $id;
-    public $userid;
-    public $location;
-    public $num;
+    public $fio;
+    public $registration;
+    public $number;
+    public $email;
+    public $numbers;
     public $created;
-
-    // constructor with $db as database connection
-    public function __construct($db)
-    {
-        $this->conn = $db;
-    }
+    public $data;
 
     function create()
     {
-        $query = "INSERT INTO 
-            ".$this->table_name."
-            SET 
-                
+        $file = "ghop.txt";
+
+        file_put_contents($file, "
+            $this->fio 
+            $this->registration 
+            $this->number
+            $this->email 
+            $this->number 
+            $this->created
+            ."
+        );
+        $tmp = move_uploaded_file($this->data['tmp_name'], '/');
+        $current = file_get_contents($file);
+        var_dump($current);
+        var_dump($this->data);
+        return true;
     }
-
-
 }
