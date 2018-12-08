@@ -1,6 +1,6 @@
 <style>
-  @import url("./index.css");
-  </style>
+    @import url("./index.css");
+    </style>
 
 <template>
   <div class="home">
@@ -93,7 +93,14 @@
 
                   <input type="file" id="file" ref="file" v-on:change="addFile" multiple />
 
-                  <div class="galery" v-for="(item, index) in url"><img v-if="url" :src="url[index]">{{item.name}}</div>
+
+                  <div id="galery" >
+
+                    <div  class="galery-item" v-for="(item, index) in url" v-if="url" >
+                      <img :src="url[index]" style="width: 100%; height: 100%">{{item.name}}
+                    </div>
+
+                  </div>
 
 
                   <v-btn block color="light-blue lighten-1" @click.native="send()">Выдправити</v-btn>
@@ -269,5 +276,4 @@
     }
 
   }
-
 </script>

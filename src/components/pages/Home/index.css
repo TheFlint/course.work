@@ -361,10 +361,44 @@ color: #2F3B4C
 
 } 
 
-
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+
+#galery{
+  display: flex;
+  flex-flow: row, wrap;
+}
+.container {
+  margin: 0 auto;
+  max-width: 100%;
+  padding: 0 1rem;
+}
+.galery-item {
+  width: 30%;
+  padding: 5px;
+}
+
+.galerym img {
+  display: block;
+}
+
+@media screen and (min-width: 600px) {
+  #galery {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+  .galery-item {
+    width: 50%;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .galery-item {
+    width: calc(100% / 3);
+  }
 }
