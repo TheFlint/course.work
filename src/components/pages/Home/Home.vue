@@ -1,6 +1,7 @@
 <style>
   @import url("./index.css");
   </style>
+
 <template>
   <div class="home">
     <div class="menu-container">
@@ -86,8 +87,14 @@
                   <v-text-field label="Номер авто" v-model="claim.numbers" prepend-icon="account_box" :rules="rules.general"
                     required color="light-blue lighten-1">
                   </v-text-field>
+                  lat {{lat}}<br>
+                  lng {{lng}}
+                  <div id="map"></div>
 
-                  <input type="file" id="file" ref="file" v-on:change="addFile()" />
+                  <input type="file" id="file" ref="file" v-on:change="addFile" multiple />
+
+                  <div class="galery" v-for="(item, index) in url"><img v-if="url" :src="url[index]">{{item.name}}</div>
+
 
                   <v-btn block color="light-blue lighten-1" @click.native="send()">Выдправити</v-btn>
 
@@ -101,6 +108,7 @@
           </div>
 
           <div class="rules">
+
             <h2>Правила користування</h2>
             <p>Цей сервіс працює тільки у місті Запоріжжя</p>
             <p> Сервіс NAME призначено для створення скарг до Державної автомобільної інспекції України на
@@ -129,7 +137,18 @@
   </div>
 </template>
 
+
+<style>
+  #map {
+    width: 100%;
+    height: 400px;
+  }
+</style>
+
 <script>
+  import Axios from 'axios'
+
+  /* eslint-disable */
   export default {
     name: 'Home',
     metaInfo: {
@@ -139,8 +158,22 @@
     },
     data() {
       return {
+        map: {},
+        lat: "",
+        lng: "",
+        url: [],
         form: false,
         snackbar: false,
+        claim: {
+          fio: '123',
+          place: '312',
+          phone: '213',
+          email: '321',
+          numbers: '13213',
+          cords: '123',
+          upFiles: [],
+        },
+        message: '',
         rules: {
           general: [(value) => !!value || 'Це поле обовязкове'],
           email: [value => {
@@ -170,19 +203,8 @@
             } else {
               return 'Це поле обовязкове'
             }
-          }],
-        },
-
-        claim: {
-          fio: '',
-          place: '',
-          phone: '',
-          email: '',
-          numbers: '',
-          cords: '',
-          upFiles: []
-        },
-        message: ''
+          }]
+        }
       }
     },
     methods: {
@@ -190,65 +212,62 @@
         if (!!this.claim.fio && !!this.claim.place && !!this.claim.phone && !!this.claim.email && !!this.claim.numbers &&
           !!this.claim.cords) {
 
+          var data = new FormData();
+          data.append('fio', this.claim.fio)
+          data.append('place', this.claim.place)
+          data.append('phone', this.claim.phone)
+          data.append('email', this.claim.email)
+          data.append('numbers', this.claim.numbers)
+          data.append('cords', this.claim.cords)
+
+          for (var i = 0; i < this.claim.upFiles.length; i++) {
+            data.append('file[' + i + ']', this.claim.upFiles[i])
+          }
+
+          Axios.post(`http://loc.gopua.xyz/claim/create`, data)
+
+            .then(({
+              data: {
+                token
+              }
+            }) => {
+              // if (redirect) router.push(redirect)
+            }).catch(({
+              response: {
+                data
+              }
+            }) => {
+              this.snackbar = true
+              this.message = data.message
+            })
         } else {
           this.snackbar = true
           this.message = 'Заполните все поля'
         }
       },
       addFile() {
-        this.file = this.$refs.file.files[0];
-
-        console.log('>>>> 1st element in files array >>>> ', this.file);
-
-        // if (this.$refs.pictureInput.file) {
-        //   this.files.pop(this.$refs.pictureInput.file);
-        // } else {
-        //   console.log("Old browser. No support for Filereader API");
-        // }
+        for (var i = 0; i < this.$refs.file.files.length; i++) {
+          this.url.push(URL.createObjectURL(this.$refs.file.files[i]))
+          this.claim.upFiles.push(this.$refs.file.files[i])
+        }
       },
-      // krya() {
-      //   console.log('-----------------------')
-      //   var f = window.getElementById('uploadForm');
-      //   f.hide();
-
-      //   // $(document).ready(function () {
-      //   //   $("formshow").click(function () {
-      //   //     $("#uploadForm").toggle(500);
-      //   //   });
-      //   // });
-      //   // $(document).ready(function(){
-      //   //     $("#carsjq").click(function(){
-      //   //         $("#getauto").toggle(500);
-      //   //     });
-      //   // });
-      // },
-      // onChanged() {
-      //   console.log("New picture loaded");
-      //   if (this.$refs.pictureInput.file) {
-      //     this.image = this.$refs.pictureInput.file;
-      //   } else {
-      //     console.log("Old browser. No support for Filereader API");
-      //   }
-      // },
-      // onRemoved() {
-      //   this.image = '';
-      // },
-      // attemptUpload() {
-      //   if (this.image) {
-      //     FormDataPost('http://localhost:8001/user/picture', this.image)
-      //       .then(response => {
-      //         if (response.data.success) {
-      //           this.image = '';
-      //           console.log("Image uploaded successfully ✨");
-      //         }
-      //       })
-      //       .catch(err => {
-      //         console.error(err);
-      //       });
-      //   }
-      // }
     },
+    mounted: function () {
+      this.map = new google.maps.Map(document.getElementById('map'), {
+        center: {
+          lat: 47.839160,
+          lng: 35.140104
+        },
+        zoom: 13
+      });
+      this.map.addListener('click', (event) => {
+        var latLng = event.latLng;
+        this.lat = latLng.lat();
+        this.lng = latLng.lng();
 
+      });
+    }
 
   }
+
 </script>
