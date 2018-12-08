@@ -59,7 +59,7 @@
               </div>
               <transition name="fade">
                 <div class="menu-manual-item" v-if="form === false">
-                  <button class="menu-button" id="formshow" v-on:click="form = !form">Оформити скаргу</button>
+                  <button class="menu-button" id="formshow" v-on:click="initMap();">Оформити скаргу</button>
                 </div>
               </transition>
             </div>
@@ -215,6 +215,25 @@
       }
     },
     methods: {
+      initMap() {
+        this.form = !this.form;
+        this.$nextTick().then(() => {
+          console.log(document.getElementById('map'));
+          this.map = new google.maps.Map(document.getElementById('map'), {
+            center: {
+              lat: 47.839160,
+              lng: 35.140104
+            },
+            zoom: 13
+          });
+          this.map.addListener('click', (event) => {
+            var latLng = event.latLng;
+            this.lat = latLng.lat();
+            this.lng = latLng.lng();
+
+          });
+        })
+      },
       send() {
         if (!!this.claim.fio && !!this.claim.place && !!this.claim.phone && !!this.claim.email && !!this.claim.numbers &&
           !!this.claim.cords) {
@@ -260,19 +279,7 @@
       },
     },
     mounted: function () {
-      this.map = new google.maps.Map(document.getElementById('map'), {
-        center: {
-          lat: 47.839160,
-          lng: 35.140104
-        },
-        zoom: 13
-      });
-      this.map.addListener('click', (event) => {
-        var latLng = event.latLng;
-        this.lat = latLng.lat();
-        this.lng = latLng.lng();
-
-      });
+     
     }
 
   }
