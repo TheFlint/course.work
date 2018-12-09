@@ -1,25 +1,11 @@
 <style>
-    @import url("./index.css");
-    </style>
-
+  @import url("./index.css");
+</style>
 <template>
   <div class="home">
     <div class="menu-container">
       <div class="menu-wrap">
         <div class="menu-content">
-          <!-- <div class="menu-head">
-            <div class="menu-head-item">
-              <a href="" class="menu-head-item-image"><img src="../../../assets/images/ico.png" alt=""></a>
-              <div class="menu-btn"><span></span></div>
-            </div>
-            <nav class="menu-navigation">
-              <ul>
-                <li><a href="">Привіт, NAME</a></li>
-                <li><a href="">Мої скарги</a></li>
-                <li><a href="">Залишити скаргу</a></li>
-              </ul>
-            </nav>
-            </div> -->
           <div class="menu-form">
             <h2 class='header'>Як це працює?</h2>
             <div class="entry">
@@ -67,44 +53,40 @@
 
               <div class="form-wrapper" v-if="form === true">
                 <v-form id="uploadForm" class="form">
-                  <h2 style="padding: 5px">Заголовок которого не хватает</h2>
-                  <v-text-field label="ПЫБ" v-model="claim.fio" prepend-icon="account_box" :rules="rules.fio" required
-                    color="light-blue lighten-1">
+                  <h2 style="padding: 5px">Заповніть всі поля</h2>
+                  <v-text-field label="ПIБ" v-model="claim.fio" prepend-icon="face" :rules="rules.fio" required color="light-blue lighten-1">
                   </v-text-field>
 
-                  <v-text-field label="Прописка" v-model="claim.place" prepend-icon="account_box" :rules="rules.general"
+                  <!-- <v-text-field label="Прописка" v-model="claim.place" prepend-icon="account_box" :rules="rules.general"
                     required color="light-blue lighten-1">
-                  </v-text-field>
+                  </v-text-field> -->
 
-                  <v-text-field label="Номер телефону" v-model="claim.phone" prepend-icon="account_box" :rules="rules.phone"
+                  <v-text-field label="Номер телефону" v-model="claim.phone" prepend-icon="phone" :rules="rules.phone"
                     required color="light-blue lighten-1" mask="(###) ### ## ##">
                   </v-text-field>
 
-                  <v-text-field label="E-mail" v-model="claim.email" prepend-icon="account_box" :rules="rules.email"
+                  <v-text-field label="E-mail" v-model="claim.email" prepend-icon="email" :rules="rules.email" required
+                    color="light-blue lighten-1">
+                  </v-text-field>
+
+                  <v-text-field label="Номер авто" v-model="claim.numbers" prepend-icon="directions_car" :rules="rules.general"
                     required color="light-blue lighten-1">
                   </v-text-field>
 
-                  <v-text-field label="Номер авто" v-model="claim.numbers" prepend-icon="account_box" :rules="rules.general"
-                    required color="light-blue lighten-1">
-                  </v-text-field>
-                  lat {{lat}}<br>
-                  lng {{lng}}
+                  <h3 style="padding: 5px">Відзначте на карті мiсце порушення</h3>
+
                   <div id="map"></div>
 
                   <input type="file" id="file" ref="file" v-on:change="addFile" multiple />
 
-
-                  <div id="galery" >
-
-                    <div  class="galery-item" v-for="(item, index) in url" v-if="url" >
-                      <img :src="url[index]" style="width: 100%; height: 100%">{{item.name}}
+                  <div id="galery">
+                    <div class="galery-item" v-for="(item, index) in url" v-if="url">
+                      <div class="cross" v-on:click="remove(index)">&#10006;</div>
+                      <img :src="url[index]" style="width: 100%; height: 100%;">
                     </div>
-
                   </div>
 
-
-                  <v-btn block color="light-blue lighten-1" @click.native="send()">Выдправити</v-btn>
-
+                  <v-btn block color="light-blue lighten-1" @click.native="send()">Вiдправити</v-btn>
                 </v-form>
 
               </div>
@@ -123,8 +105,8 @@
               у
               частині зупинки/стоянки транспортних засобів.
             </p>
-            <p> Для подання скарги Вам необхідно зареєструватися. ДАІ не розглядатиме скаргу, подану анонімно, тому
-              Ваші П.І.Б. є обов'язковими.
+            <p>ДАІ не розглядатиме скаргу, подану анонімно, тому
+              Ваші ПІБ є обов'язковими.
               Адреса для листування потрібна для отримання відповіді від інспектора ДАІ, який розглядатиме Вашу
               скаргу,
               а телефон може бути використаний інспектором для уточнення у Вас деталей справи.
@@ -143,15 +125,6 @@
   </div>
   </div>
 </template>
-
-
-<style>
-  #map {
-    width: 100%;
-    height: 400px;
-  }
-</style>
-
 <script>
   import Axios from 'axios'
 
@@ -166,18 +139,18 @@
     data() {
       return {
         map: {},
+        marker: {},
         lat: "",
         lng: "",
         url: [],
         form: false,
         snackbar: false,
         claim: {
-          fio: '123',
-          place: '312',
-          phone: '213',
-          email: '321',
-          numbers: '13213',
-          cords: '123',
+          fio: '',
+          phone: '',
+          email: '',
+          numbers: '',
+          cords: null,
           upFiles: [],
         },
         message: '',
@@ -185,28 +158,28 @@
           general: [(value) => !!value || 'Це поле обовязкове'],
           email: [value => {
             if (!!value) {
-              return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) || 'Введите верный email'
+              return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) || 'Введіть вірний email'
             } else {
               return 'Це поле обовязкове'
             }
           }],
           phone: [value => {
             if (!!value) {
-              return value.length > 9 || 'Введите верный номер телефона'
+              return value.length > 9 || 'Введіть вірний номер телефону'
             } else {
               return 'Це поле обовязкове'
             }
           }],
           fio: [value => {
             if (!!value) {
-              return /[А-Яа-яЁёІіЇїЄє]+$/.test(value) || 'Введите верный fio'
+              return /[А-Яа-яЁёІіЇїЄє]+$/.test(value) || 'Введіть правильно ПIБ'
             } else {
               return 'Це поле обовязкове'
             }
           }],
           numbers: [value => {
             if (!!value) {
-              return /[А-Я]{2}[0-9]{4}[А-Я]{2}/.test(value) || 'Введите верно номер авто'
+              return /[А-Я]{2}[0-9]{4}[А-Я]{2}/.test(value) || 'Введіть правильно номер авто'
             } else {
               return 'Це поле обовязкове'
             }
@@ -217,8 +190,9 @@
     methods: {
       initMap() {
         this.form = !this.form;
+
         this.$nextTick().then(() => {
-          console.log(document.getElementById('map'));
+
           this.map = new google.maps.Map(document.getElementById('map'), {
             center: {
               lat: 47.839160,
@@ -226,25 +200,39 @@
             },
             zoom: 13
           });
-          this.map.addListener('click', (event) => {
-            var latLng = event.latLng;
-            this.lat = latLng.lat();
-            this.lng = latLng.lng();
 
+          this.marker = new google.maps.Marker({
+            position: {
+              lat: 47.839160,
+              lng: 35.140104
+            },
+            map: this.map
           });
+
+          this.map.addListener('click', (event) => {
+            var latLng = event.latLng
+            this.lat = latLng.lat()
+            this.lng = latLng.lng()
+            this.marker.setPosition(latLng)
+            this.claim.cords = true;
+          });
+
         })
+
+      },
+      remove(index) {
+        this.url.splice(index, 1)
+        this.claim.upFiles.splice(index, 1)
       },
       send() {
-        if (!!this.claim.fio && !!this.claim.place && !!this.claim.phone && !!this.claim.email && !!this.claim.numbers &&
+        if (!!this.claim.fio && !!this.claim.phone && !!this.claim.email && !!this.claim.numbers &&
           !!this.claim.cords) {
-
           var data = new FormData();
           data.append('fio', this.claim.fio)
-          data.append('place', this.claim.place)
           data.append('phone', this.claim.phone)
           data.append('email', this.claim.email)
           data.append('numbers', this.claim.numbers)
-          data.append('cords', this.claim.cords)
+          data.append('cords', [this.lat, this.lan])
 
           for (var i = 0; i < this.claim.upFiles.length; i++) {
             data.append('file[' + i + ']', this.claim.upFiles[i])
@@ -268,19 +256,32 @@
             })
         } else {
           this.snackbar = true
-          this.message = 'Заполните все поля'
+          this.message = 'Заповніть всі поля'
         }
       },
       addFile() {
-        for (var i = 0; i < this.$refs.file.files.length; i++) {
-          this.url.push(URL.createObjectURL(this.$refs.file.files[i]))
-          this.claim.upFiles.push(this.$refs.file.files[i])
+        var length;
+        if (this.claim.upFiles.length < 6) {
+          if (this.$refs.file.files.length <= 6) {
+            length = this.$refs.file.files.length
+          } else {
+            length = 6
+            this.snackbar = true
+            this.message = 'максимум 6 фото'
+          }
+          for (var i = 0; i < length; i++) {
+            this.url.push(URL.createObjectURL(this.$refs.file.files[i]))
+            this.claim.upFiles.push(this.$refs.file.files[i])
+          }
+        } else {
+          this.snackbar = true
+          this.message = 'максимум 6 фото'
         }
-      },
     },
-    mounted: function () {
-     
-    }
+  },
+  mounted: function () {
+
+  }
 
   }
 </script>
