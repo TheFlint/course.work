@@ -9,6 +9,8 @@
 namespace Flint\Application\Models;
 
 
+use  Flint\Application\Functional\PHPMailer;
+
 class ClaimModel
 {
     public $fio;
@@ -18,24 +20,60 @@ class ClaimModel
     public $numbers;
     public $created;
     public $data;
+    public $lat;
+    public $lng;
+    public $file2;
 
     function create()
     {
+        $index = 0;
         $file = "ghop.txt";
+        $destination = 'uploads/'.$this->numbers.'/';
 
-        file_put_contents($file, "
-            $this->fio 
-            $this->registration 
-            $this->number
-            $this->email 
-            $this->number 
-            $this->created
-            ."
+        cycle:
+        if (file_exists($destination)){
+            $destination = 'uploads/'.$this->numbers."(".$index.")/";
+            $index++;
+            goto cycle;
+        } else {
+            mkdir($destination);
+        }
+
+        file_put_contents($file,
+            "
+                      ПIБ вiдправника " . $this->fio . '
+                      Номер телефону ' . $this->number . '
+                      e-mail ' . $this->email . '
+                      Номер машини ' . $this->numbers . '
+                      Широта ' . $this->lat . '
+                      Доавгота ' . $this->lng . '
+                      Час створення ' . $this->created
         );
-        $tmp = move_uploaded_file($this->data['tmp_name'], '/');
-        $current = file_get_contents($file);
-        var_dump($current);
-        var_dump($this->data);
+        $mail = new PHPMailer;
+        $mail->setFrom('a7leno@gmail.com', 'First Last');
+        $mail->addAddress('a7leno@gmaio.com', 'John Doe');
+        $mail->Subject = 'PHPMailer file sender';
+        $mail->msgHTML(
+            "
+                      ПIБ вiдправника " . $this->fio . '
+                      Номер телефону ' . $this->number . '
+                      e-mail ' . $this->email . '
+                      Номер машини ' . $this->numbers . '
+                      Широта ' . $this->lat . '
+                      Доавгота ' . $this->lng . '
+                      Час створення ' . $this->created);
+        // Attach uploaded files
+        for ($i = 0; $i < count($this->data['name']); $i++) {
+
+            $tmp = move_uploaded_file($this->data['tmp_name'][$i],  $destination.$this->data['name'][$i]);
+
+            var_dump($tmp);
+
+            $mail->addAttachment($destination.$this->data['name'][$i]);
+        }
+        $r = $mail->send();
+        var_dump($r);
+
         return true;
     }
 }
