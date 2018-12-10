@@ -91,7 +91,7 @@
 
               </div>
             </transition>
-            <v-snackbar timeout="6000" bottom="bottom" color="red lighten-1" v-model="snackbar">
+            <v-snackbar timeout="6000" bottom="bottom" :color="color" v-model="snackbar" >
               {{ message }}
             </v-snackbar>
           </div>
@@ -138,6 +138,7 @@
     },
     data() {
       return {
+        response: '',
         map: {},
         marker: {},
         lat: "",
@@ -145,6 +146,7 @@
         url: [],
         form: false,
         snackbar: false,
+        color: 'red',
         claim: {
           fio: '',
           phone: '',
@@ -232,56 +234,67 @@
           data.append('phone', this.claim.phone)
           data.append('email', this.claim.email)
           data.append('numbers', this.claim.numbers)
-          data.append('cords', [this.lat, this.lan])
+          data.append('lat', this.lat)
+          data.append('lng', this.lng)
 
           for (var i = 0; i < this.claim.upFiles.length; i++) {
             data.append('file[' + i + ']', this.claim.upFiles[i])
           }
 
           Axios.post(`http://loc.gopua.xyz/claim/create`, data)
-
-            .then(({
-              data: {
-                token
-              }
-            }) => {
-              // if (redirect) router.push(redirect)
-            }).catch(({
-              response: {
-                data
-              }
-            }) => {
+            .then(data => {
+              this.response = data.statusText
+              if (this.response == "Created"){
+              this.color = 'success'
               this.snackbar = true
-              this.message = data.message
-            })
+              this.message = "Заявка створена"              
+            } else {
+              this.color = "error"
+              this.snackbar = true
+              this.message = "Помилка, спробуйте пiзнiше"
+            }
+            })           
         } else {
+          this.color = "error"
           this.snackbar = true
           this.message = 'Заповніть всі поля'
         }
       },
       addFile() {
-        var length;
+        var length = 6 - this.claim.upFiles.length;
         if (this.claim.upFiles.length < 6) {
-          if (this.$refs.file.files.length <= 6) {
-            length = this.$refs.file.files.length
-          } else {
-            length = 6
-            this.snackbar = true
-            this.message = 'максимум 6 фото'
+          if (this.$refs.file.files.length <= length) {
+            for (var i = 0; i < length; i++) {
+              this.url.push(URL.createObjectURL(this.$refs.file.files[i]))
+              this.claim.upFiles.push(this.$refs.file.files[i])
+            }
+            return
           }
-          for (var i = 0; i < length; i++) {
-            this.url.push(URL.createObjectURL(this.$refs.file.files[i]))
-            this.claim.upFiles.push(this.$refs.file.files[i])
-          }
-        } else {
-          this.snackbar = true
-          this.message = 'максимум 6 фото'
         }
+        this.color = "error"
+        this.snackbar = true
+        this.message = 'максимум 6 фото'
+      },
     },
-  },
-  mounted: function () {
+    mounted: function () {
+
+    }
 
   }
+    // ,({
+    //           data: {
+    //             token
+    //           }              
+    //         }) => {
 
-  }
+    //           // if (redirect) router.push(redirect)
+    //         }).catch(({
+    //           response: {
+    //             data
+    //           }
+    //         }) => {
+    //           console.log(data)
+    //           this.snackbar = true
+    //           this.message = response.data.message
+    //         }
 </script>
